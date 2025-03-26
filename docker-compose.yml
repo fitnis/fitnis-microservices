@@ -14,6 +14,11 @@ services:
       - "55432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     networks:
       - default
 
@@ -23,7 +28,8 @@ services:
     volumes:
       - ./database-migrations/migrations:/migrations
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     command:
       [
         "-path",
@@ -64,8 +70,10 @@ services:
       KC_HOSTNAME_STRICT: "false" # So you can access Keycloak from any hostname while in dev
 
     depends_on:
-      - postgres
-      - database_migrations
+      postgres:
+        condition: service_healthy
+      database_migrations:
+        condition: service_completed_successfully
 
     ports:
       - "58080:8080" # Port for the Keycloak UI / REST
@@ -74,6 +82,175 @@ services:
     volumes:
       - keycloak_data:/opt/keycloak/data
 
+    networks:
+      - default
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health/ready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # -----------------------------------------------------------
+  # Microservices
+  # -----------------------------------------------------------
+  auth-service:
+    build:
+      context: ./auth-service
+      dockerfile: ./auth-service/Dockerfile
+    restart: unless-stopped
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: keycloak
+      KEYCLOAK_BASE_URL: http://keycloak:8080
+      KEYCLOAK_REALM: fitnis
+      KEYCLOAK_CLIENT_ID: auth-service
+      PORT: 8080
+    ports:
+      - "8081:8080"
+    depends_on:
+      keycloak:
+        condition: service_healthy
+    networks:
+      - default
+
+  patient-service:
+    build:
+      context: ./patient-service
+      dockerfile: ./patient-service/Dockerfile
+    restart: unless-stopped
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: keycloak
+      KEYCLOAK_BASE_URL: http://keycloak:8080
+      KEYCLOAK_REALM: fitnis
+      KEYCLOAK_CLIENT_ID: patient-service
+      PORT: 8080
+    ports:
+      - "8082:8080"
+    depends_on:
+      keycloak:
+        condition: service_healthy
+    networks:
+      - default
+
+  appointment-service:
+    build:
+      context: ./appointment-service
+      dockerfile: ./appointment-service/Dockerfile
+    restart: unless-stopped
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: keycloak
+      KEYCLOAK_BASE_URL: http://keycloak:8080
+      KEYCLOAK_REALM: fitnis
+      KEYCLOAK_CLIENT_ID: appointment-service
+      PORT: 8080
+    ports:
+      - "8083:8080"
+    depends_on:
+      keycloak:
+        condition: service_healthy
+    networks:
+      - default
+
+  medical-records-service:
+    build:
+      context: ./medical-records-service
+      dockerfile: ./medical-records-service/Dockerfile
+    restart: unless-stopped
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: keycloak
+      KEYCLOAK_BASE_URL: http://keycloak:8080
+      KEYCLOAK_REALM: fitnis
+      KEYCLOAK_CLIENT_ID: medical-records-service
+      PORT: 8080
+    ports:
+      - "8084:8080"
+    depends_on:
+      keycloak:
+        condition: service_healthy
+    networks:
+      - default
+
+  laboratory-service:
+    build:
+      context: ./laboratory-service
+      dockerfile: ./laboratory-service/Dockerfile
+    restart: unless-stopped
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: keycloak
+      KEYCLOAK_BASE_URL: http://keycloak:8080
+      KEYCLOAK_REALM: fitnis
+      KEYCLOAK_CLIENT_ID: laboratory-service
+      PORT: 8080
+    ports:
+      - "8085:8080"
+    depends_on:
+      keycloak:
+        condition: service_healthy
+    networks:
+      - default
+
+  prescription-service:
+    build:
+      context: ./prescription-service
+      dockerfile: ./prescription-service/Dockerfile
+    restart: unless-stopped
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: keycloak
+      KEYCLOAK_BASE_URL: http://keycloak:8080
+      KEYCLOAK_REALM: fitnis
+      KEYCLOAK_CLIENT_ID: prescription-service
+      PORT: 8080
+    ports:
+      - "8086:8080"
+    depends_on:
+      keycloak:
+        condition: service_healthy
+    networks:
+      - default
+
+  referral-service:
+    build:
+      context: ./referral-service
+      dockerfile: ./referral-service/Dockerfile
+    restart: unless-stopped
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: keycloak
+      KEYCLOAK_BASE_URL: http://keycloak:8080
+      KEYCLOAK_REALM: fitnis
+      KEYCLOAK_CLIENT_ID: referral-service
+      PORT: 8080
+    ports:
+      - "8087:8080"
+    depends_on:
+      keycloak:
+        condition: service_healthy
     networks:
       - default
 

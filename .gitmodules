@@ -1,3 +1,24 @@
 [submodule "database-migrations"]
 	path = database-migrations
 	url = https://github.com/fitnis/database-migrations
+[submodule "auth-service"]
+	path = auth-service
+	url = https://github.com/fitnis/auth-service
+[submodule "patient-service"]
+	path = patient-service
+	url = https://github.com/fitnis/patient-service
+[submodule "appointment-service"]
+	path = appointment-service
+	url = https://github.com/fitnis/appointment-service
+[submodule "medical-records-service"]
+	path = medical-records-service
+	url = https://github.com/fitnis/medical-records-service
+[submodule "laboratory-service"]
+	path = laboratory-service
+	url = https://github.com/fitnis/laboratory-service
+[submodule "prescription-service"]
+	path = prescription-service
+	url = https://github.com/fitnis/prescription-service
+[submodule "referral-service"]
+	path = referral-service
+	url = https://github.com/fitnis/referral-service
