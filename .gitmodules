@@ -4,12 +4,18 @@
 [submodule "appointment-service"]
 	path = appointment-service
 	url = https://github.com/fitnis/appointment-service
-[submodule "laboratory-service"]
-	path = laboratory-service
-	url = https://github.com/fitnis/laboratory-service
 [submodule "prescription-service"]
 	path = prescription-service
 	url = https://github.com/fitnis/prescription-service
 [submodule "referral-service"]
 	path = referral-service
 	url = https://github.com/fitnis/referral-service
+[submodule "order-service"]
+	path = order-service
+	url = https://github.com/fitnis/order-service
+[submodule "record-service"]
+	path = record-service
+	url = https://github.com/fitnis/record-service
+[submodule "lab-service"]
+	path = lab-service
+	url = https://github.com/fitnis/lab-service
