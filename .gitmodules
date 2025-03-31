@@ -1,6 +1,3 @@
-[submodule "patient-service"]
-	path = patient-service
-	url = https://github.com/fitnis/patient-service
 [submodule "appointment-service"]
 	path = appointment-service
 	url = https://github.com/fitnis/appointment-service
@@ -19,3 +16,6 @@
 [submodule "lab-service"]
 	path = lab-service
 	url = https://github.com/fitnis/lab-service
+[submodule "api-gateway"]
+	path = api-gateway
+	url = https://github.com/fitnis/api-gateway
