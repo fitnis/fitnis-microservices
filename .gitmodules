@@ -19,3 +19,6 @@
 [submodule "api-gateway"]
 	path = api-gateway
 	url = https://github.com/fitnis/api-gateway
+[submodule "patient-service"]
+	path = patient-service
+	url = https://github.com/fitnis/patient-service
